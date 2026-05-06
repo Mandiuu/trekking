@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Despedida de Seba III — Cerro Alto del Naranjo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky1:#87CEEB;--sky2:#c8e8f5;--sky3:#f0f8ff;
+  --mountain1:#4a5568;--mountain2:#718096;--mountain3:#a0aec0;
+  --green1:#2d6a4f;--green2:#52b788;--green3:#95d5b2;
+  --gold:#c9a84c;--navy:#1a2744;--cream:#fef9f0;
+  --text:#1a2744;--accent:#c9a84c;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Libre Baskerville',Georgia,serif;
+  background:var(--cream);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* ===== MOUNTAIN CANVAS ===== */
+#mountain-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
+}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem;
+  z-index:1;
+}
+.hero-badge{
+  font-family:'Oswald',sans-serif;font-size:.75rem;font-weight:300;
+  letter-spacing:.35em;text-transform:uppercase;color:var(--navy);
+  border:1px solid var(--gold);padding:.4rem 1.2rem;margin-bottom:1.5rem;
+  background:rgba(255,255,255,.6);backdrop-filter:blur(4px);
+  animation:fadeDown .8s ease both;
+}
+.hero h1{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(3rem,8vw,7rem);font-weight:900;
+  line-height:1;color:var(--navy);
+  text-shadow:2px 2px 0 rgba(255,255,255,.7);
+  animation:fadeDown .9s .1s ease both;
+}
+.hero h1 em{color:#e8641a;font-style:italic}
+.hero-sub{
+  font-size:clamp(1rem,2.5vw,1.4rem);color:var(--navy);
+  margin-top:.8rem;font-style:italic;
+  animation:fadeDown .9s .2s ease both;
+}
+.hero-date{
+  font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--navy);margin-top:1.5rem;
+  background:rgba(255,255,255,.7);backdrop-filter:blur(4px);
+  padding:.5rem 1.5rem;border-radius:2px;
+  animation:fadeDown .9s .3s ease both;
+}
+.hero-date span{color:var(--gold)}
+
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  font-family:'Oswald',sans-serif;font-size:.65rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--navy);opacity:.6;
+  animation:bounce 2s infinite;
+}
+
+
+
+/* ===== INFO SECTION ===== */
+.info-section{
+  position:relative;z-index:1;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(6px);
+  max-width:820px;margin:3rem auto;padding:3rem 2rem;
+  border:1px solid rgba(255,255,255,.25);
+}
+.info-section h2{
+  font-family:'Playfair Display',serif;font-size:2rem;
+  text-align:center;margin-bottom:2rem;color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,.5);
+}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem}
+.info-card{
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);
+  padding:1.5rem;text-align:center;backdrop-filter:blur(4px);
+}
+.info-card .icon{font-size:2.2rem;margin-bottom:.5rem}
+.info-card .label{
+  font-family:'Oswald',sans-serif;font-size:.65rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;
+}
+.info-card .value{font-size:1rem;font-weight:700;color:#fff;line-height:1.3}
+
+/* ===== FORM SECTION ===== */
+.form-section{
+  position:relative;z-index:1;
+  background:rgba(0,0,0,.35);backdrop-filter:blur(8px);
+  padding:4rem 2rem;color:#fff;
+  border-top:1px solid rgba(255,255,255,.1);
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.form-inner{max-width:600px;margin:0 auto;text-align:center}
+.form-inner h2{
+  font-family:'Playfair Display',serif;font-size:2.2rem;
+  margin-bottom:.5rem;
+}
+.form-inner h2 em{color:var(--gold);font-style:italic}
+.form-inner p{color:rgba(255,255,255,.75);font-size:.95rem;margin-bottom:2rem}
+
+.form-group{margin-bottom:1.2rem;text-align:left}
+.form-group label{
+  display:block;font-family:'Oswald',sans-serif;font-size:.7rem;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:.4rem;
+}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:.75rem 1rem;font-family:'Libre Baskerville',serif;
+  font-size:.9rem;outline:none;border-radius:2px;
+  transition:border-color .2s,background .2s;
+  appearance:none;
+}
+.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,.3)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:var(--gold);background:rgba(255,255,255,.12);
+}
+.form-group select option{background:#1a2744;color:#fff}
+.form-group textarea{resize:vertical;min-height:80px}
+
+.submit-btn{
+  width:100%;padding:1rem;
+  background:var(--gold);color:var(--navy);
+  font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;
+  border:none;cursor:pointer;margin-top:.5rem;
+  transition:transform .15s,box-shadow .15s;
+  border-radius:2px;
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(201,168,76,.4)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.form-row-inline{display:flex;gap:10px;margin-bottom:.8rem;}
+.form-row-inline input{
+  flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:.75rem 1rem;font-family:'Libre Baskerville',serif;
+  font-size:.95rem;outline:none;border-radius:2px;
+  transition:border-color .2s,background .2s;
+}
+.form-row-inline input::placeholder{color:rgba(255,255,255,.3)}
+.form-row-inline input:focus{border-color:var(--gold);background:rgba(255,255,255,.12)}
+.form-row-inline button{
+  font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;
+  background:var(--gold);color:var(--navy);border:none;
+  padding:.75rem 1.2rem;cursor:pointer;border-radius:2px;
+  transition:opacity .2s;white-space:nowrap;
+}
+.form-row-inline button:hover{opacity:.85}
+.form-row-inline button:disabled{opacity:.4;cursor:not-allowed}
+
+.success-msg{
+  display:none;font-size:.9rem;color:#2ecc71;
+  margin-bottom:1rem;letter-spacing:.02em;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeSlide{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes dot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+  .hero{padding:1.5rem 1rem;}
+  .hero-badge{font-size:.65rem;letter-spacing:.2em;padding:.35rem .9rem;}
+  .hero h1{font-size:clamp(2.4rem,11vw,3.5rem);}
+  .hero-sub{font-size:.95rem;}
+  .hero-date{font-size:.85rem;letter-spacing:.08em;padding:.4rem 1rem;}
+
+  .info-section{margin:1.5rem .75rem;padding:1.5rem 1rem;}
+  .info-section h2{font-size:1.4rem;margin-bottom:1.2rem;}
+  .info-grid{grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.2rem;}
+  .info-card{padding:1rem .75rem;}
+  .info-card .icon{font-size:1.6rem;}
+  .info-card .value{font-size:.85rem;}
+
+  .form-section{padding:2.5rem 1rem;}
+  .form-inner h2{font-size:1.6rem;}
+  .form-inner p{font-size:.85rem;margin-bottom:1.2rem;}
+  .form-row-inline{flex-direction:column;gap:8px;}
+  .form-row-inline button{width:100%;padding:.85rem;}
+}
+
+@media(max-width:380px){
+  .info-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:2.2rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ANIMATED MOUNTAIN CANVAS -->
+<canvas id="mountain-canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Despedida de Seba · Episodio III</div>
+  <h1>Cerro Alto<br>del <em>Naranjo</em></h1>
+  <div class="hero-date">
+    Jueves <span>21 de Mayo, 2025</span>
+  </div>
+  <div class="scroll-hint">▼ &nbsp; inscríbete abajo &nbsp; ▼</div>
+</section>
+
+
+
+<!-- INFO -->
+<section class="info-section">
+  <h2>📍 Qué estamos haciendo?</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">🏔️</div>
+      <div class="label">Destino</div>
+      <div class="value">Cerro Alto del Naranjo<br><small style="font-weight:400;font-size:.85em">Región Metropolitana</small></div>
+    </div>
+    <div class="info-card">
+      <div class="icon">📅</div>
+      <div class="label">Fecha</div>
+      <div class="value">Jueves 21 de Mayo<br><small style="font-weight:400;font-size:.85em">Día feriado 🎉</small></div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🥾</div>
+      <div class="label">Actividad</div>
+      <div class="value">Trekking<br><small style="font-weight:400;font-size:.85em">Nivel intermedio</small></div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🎉</div>
+      <div class="label">Motivo</div>
+      <div class="value">Despedida de Seba<br><small style="font-weight:400;font-size:.85em">Episodio III</small></div>
+    </div>
+  </div>
+  <p style="text-align:center;font-style:italic;color:rgba(255,255,255,.7);font-size:.9rem">
+    Punto de encuentro, hora y detalles de equipo por confirmar — <strong style="color:#fff">¡inscríbete primero!</strong>
+  </p>
+</section>
+
+<!-- FORM -->
+<section class="form-section">
+  <div class="form-inner">
+    <h2>¡Me anoto <em>porque me gusta sufrir un feriado AM</em>!</h2>
+    <p>Pon tu nombre</p>
+
+    <div class="form-row-inline">
+      <input type="text" id="nombre" placeholder="Tu nombre…" maxlength="60">
+      <button id="submit-btn" onclick="inscribirse()">Vamooooos</button>
+    </div>
+    <div class="success-msg" id="success-msg">✓ Nos vemos en la cima</div>
+
+    <!-- INSCRITOS -->
+    <div style="margin-top:2.5rem;border-top:1px solid rgba(255,255,255,.12);padding-top:2rem;">
+      <p style="font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;"> Confirmados</p>
+      <ul id="inscritos-list" style="list-style:none;display:flex;flex-direction:column;gap:.5rem;"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+// ============================================================
+// CONFIGURACIÓN — reemplaza estas URLs con tu Google Form/Sheet
+// ============================================================
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQlTd1XXyefXresptcusu0lY18B0bdEfw5-GojPjdx63gbWpFCK9LPJ6DYK15GqFJMNUfXxjjH8ga6O/pub?output=csv';
+
+const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfp7UqYeW5sz_VPgDgz-Za0meKrn16g0ecg4TL-WDN7g8GgKA/formResponse';
+
+// IDs de los campos del formulario de Google (entry.XXXXXXX)
+const FIELD_NOMBRE = 'entry.690840816';
+// ============================================================
+
+// ===== MOUNTAIN CANVAS ANIMATION =====
+const canvas = document.getElementById('mountain-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, hikers = [], clouds = [], birds = [], sunAngle = 0;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Hikers (dos figuritas subiendo el cerro)
+function initHikers(){
+  hikers = [
+    {x: W*0.15, y: H*0.72, step:0, stepDir:1, color:'#2d6a4f', hatColor:'#c9a84c', name:'A'},
+    {x: W*0.22, y: H*0.74, step:0, stepDir:-1, color:'#1a2744', hatColor:'#e74c3c', name:'B'}
+  ];
+}
+initHikers();
+
+// Clouds
+function initClouds(){
+  clouds = Array.from({length:5},(_,i)=>({
+    x: W*(0.1+i*0.2), y:H*(0.08+Math.random()*.12),
+    w:80+Math.random()*60, speed:0.2+Math.random()*0.3
+  }));
+}
+initClouds();
+
+// ===== TERRAIN PATH (used by hikers and trail) =====
+function getTerrainY(px){
+  // Smooth bezier-like terrain following main mountain slope
+  const pts = [
+    [0,        H*.80],
+    [W*.08,    H*.76],
+    [W*.15,    H*.74],
+    [W*.22,    H*.71],
+    [W*.30,    H*.68],
+    [W*.38,    H*.64],
+    [W*.46,    H*.60],
+    [W*.52,    H*.56],
+    [W*.565,   H*.52], // cima
+    [W*.63,    H*.58],
+    [W*.72,    H*.64],
+    [W*.82,    H*.70],
+    [W,        H*.76],
+  ];
+  for(let i=0;i<pts.length-1;i++){
+    const [x0,y0]=pts[i], [x1,y1]=pts[i+1];
+    if(px>=x0 && px<=x1){
+      const t=(px-x0)/(x1-x0);
+      return y0+(y1-y0)*t;
+    }
+  }
+  return H*.78;
+}
+
+function drawSky(t){
+  // Sky — warm golden hour
+  const skyGrad = ctx.createLinearGradient(0,0,0,H*.62);
+  skyGrad.addColorStop(0,'#1b3a6b');
+  skyGrad.addColorStop(.2,'#2e6fad');
+  skyGrad.addColorStop(.55,'#7abde8');
+  skyGrad.addColorStop(.8,'#c9e8f7');
+  skyGrad.addColorStop(1,'#e8f4f8');
+  ctx.fillStyle=skyGrad;
+  ctx.fillRect(0,0,W,H);
+}
+
+function drawSun(t){
+  const sx=W*.78, sy=H*.13;
+  // Halo
+  const halo=ctx.createRadialGradient(sx,sy,0,sx,sy,110);
+  halo.addColorStop(0,'rgba(255,235,130,.22)');
+  halo.addColorStop(.5,'rgba(255,210,80,.08)');
+  halo.addColorStop(1,'rgba(255,200,60,0)');
+  ctx.fillStyle=halo; ctx.beginPath();ctx.arc(sx,sy,110,0,Math.PI*2);ctx.fill();
+  // Inner glow
+  const inner=ctx.createRadialGradient(sx,sy,0,sx,sy,32);
+  inner.addColorStop(0,'rgba(255,252,200,1)');
+  inner.addColorStop(.4,'rgba(255,230,120,.95)');
+  inner.addColorStop(1,'rgba(255,200,60,0)');
+  ctx.fillStyle=inner; ctx.beginPath();ctx.arc(sx,sy,32,0,Math.PI*2);ctx.fill();
+  // Sun disk
+  ctx.fillStyle='#fff8c0';
+  ctx.beginPath();ctx.arc(sx,sy,16,0,Math.PI*2);ctx.fill();
+  // Sun rays
+  ctx.save();ctx.translate(sx,sy);
+  for(let i=0;i<12;i++){
+    ctx.rotate(Math.PI*2/12);
+    ctx.strokeStyle=`rgba(255,230,100,${0.12+Math.sin(t*.4+i)*.05})`;
+    ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(20,0);ctx.lineTo(38+Math.sin(t+i*2)*4,0);ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawFarMountains(){
+  // Layer 1 — very far, hazy blue
+  ctx.fillStyle='#b0c8dc';
+  ctx.beginPath();
+  ctx.moveTo(0,H*.58);
+  ctx.bezierCurveTo(W*.05,H*.42,W*.1,H*.44,W*.15,H*.38);
+  ctx.bezierCurveTo(W*.2,H*.32,W*.25,H*.46,W*.3,H*.44);
+  ctx.bezierCurveTo(W*.35,H*.42,W*.38,H*.28,W*.44,H*.26);
+  ctx.bezierCurveTo(W*.5,H*.24,W*.54,H*.40,W*.58,H*.38);
+  ctx.bezierCurveTo(W*.62,H*.36,W*.66,H*.22,W*.72,H*.20);
+  ctx.bezierCurveTo(W*.78,H*.18,W*.82,H*.34,W*.87,H*.32);
+  ctx.bezierCurveTo(W*.92,H*.30,W*.96,H*.40,W,H*.38);
+  ctx.lineTo(W,H*.58);ctx.closePath();ctx.fill();
+
+  // Snow on far peaks
+  ctx.fillStyle='rgba(230,242,252,.8)';
+  [[W*.44,H*.26,W*.04],[W*.72,H*.20,W*.045],[W*.87,H*.32,W*.03]].forEach(([mx,my,sw])=>{
+    ctx.beginPath();
+    ctx.moveTo(mx,my);
+    ctx.bezierCurveTo(mx-sw*.6,my+H*.04,mx-sw,my+H*.06,mx-sw,my+H*.06);
+    ctx.bezierCurveTo(mx,my+H*.025,mx+sw,my+H*.06,mx+sw,my+H*.06);
+    ctx.bezierCurveTo(mx+sw*.6,my+H*.04,mx,my,mx,my);
+    ctx.fill();
+  });
+
+  // Layer 2 — mid distance, blue-grey
+  ctx.fillStyle='#7fa5bc';
+  ctx.beginPath();
+  ctx.moveTo(0,H*.68);
+  ctx.bezierCurveTo(W*.04,H*.52,W*.09,H*.55,W*.14,H*.49);
+  ctx.bezierCurveTo(W*.19,H*.43,W*.24,H*.56,W*.30,H*.53);
+  ctx.bezierCurveTo(W*.36,H*.50,W*.40,H*.37,W*.47,H*.35);
+  ctx.bezierCurveTo(W*.54,H*.33,W*.58,H*.48,W*.64,H*.45);
+  ctx.bezierCurveTo(W*.70,H*.42,W*.74,H*.30,W*.80,H*.28);
+  ctx.bezierCurveTo(W*.86,H*.26,W*.91,H*.44,W*.96,H*.42);
+  ctx.bezierCurveTo(W*.98,H*.41,W,H*.44,W,H*.44);
+  ctx.lineTo(W,H*.68);ctx.closePath();ctx.fill();
+
+  // Snow mid layer
+  ctx.fillStyle='rgba(220,238,250,.7)';
+  [[W*.47,H*.35,W*.035],[W*.80,H*.28,W*.04]].forEach(([mx,my,sw])=>{
+    ctx.beginPath();
+    ctx.moveTo(mx,my);
+    ctx.lineTo(mx-sw,my+H*.05);ctx.lineTo(mx+sw,my+H*.05);
+    ctx.closePath();ctx.fill();
+  });
+}
+
+function drawMainMountain(){
+  // Main mountain — Cerro Alto del Naranjo — colores naranjos 🍊
+  // Shadow side (right)
+  const shadowGrad=ctx.createLinearGradient(W*.56,H*.52,W*.85,H*.78);
+  shadowGrad.addColorStop(0,'#7a3510');
+  shadowGrad.addColorStop(1,'#4a1f08');
+  ctx.fillStyle=shadowGrad;
+  ctx.beginPath();
+  ctx.moveTo(W*.565,H*.52);
+  ctx.bezierCurveTo(W*.60,H*.58,W*.64,H*.62,W*.70,H*.67);
+  ctx.bezierCurveTo(W*.76,H*.72,W*.82,H*.74,W*.90,H*.77);
+  ctx.lineTo(W,H*.79);ctx.lineTo(W,H);ctx.lineTo(W*.565,H);ctx.closePath();
+  ctx.fill();
+
+  // Light side (left)
+  const lightGrad=ctx.createLinearGradient(0,H*.52,W*.56,H*.78);
+  lightGrad.addColorStop(0,'#e8641a');
+  lightGrad.addColorStop(.4,'#d4531a');
+  lightGrad.addColorStop(1,'#b8420f');
+  ctx.fillStyle=lightGrad;
+  ctx.beginPath();
+  ctx.moveTo(-20,H);
+  ctx.lineTo(W*.04,H*.78);
+  ctx.bezierCurveTo(W*.08,H*.75,W*.12,H*.74,W*.16,H*.73);
+  ctx.bezierCurveTo(W*.22,H*.71,W*.28,H*.70,W*.33,H*.67);
+  ctx.bezierCurveTo(W*.38,H*.64,W*.43,H*.62,W*.48,H*.59);
+  ctx.bezierCurveTo(W*.52,H*.56,W*.545,H*.54,W*.565,H*.52);
+  ctx.lineTo(W*.565,H);ctx.lineTo(-20,H);ctx.closePath();
+  ctx.fill();
+
+  // Rock face detail lines (left side)
+  ctx.strokeStyle='rgba(180,80,20,.3)';ctx.lineWidth=1;
+  [[W*.2,H*.72,W*.32,H*.67],[W*.3,H*.69,W*.42,H*.64],[W*.1,H*.76,W*.18,H*.74]].forEach(([x1,y1,x2,y2])=>{
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  });
+
+  // Snow cap — detailed
+  ctx.fillStyle='rgba(240,250,255,.95)';
+  ctx.beginPath();
+  ctx.moveTo(W*.565,H*.52);
+  ctx.bezierCurveTo(W*.545,H*.545,W*.525,H*.555,W*.505,H*.565);
+  ctx.bezierCurveTo(W*.488,H*.573,W*.478,H*.578,W*.472,H*.583);
+  ctx.bezierCurveTo(W*.49,H*.575,W*.51,H*.568,W*.53,H*.572);
+  ctx.bezierCurveTo(W*.55,H*.576,W*.565,H*.572,W*.585,H*.565);
+  ctx.bezierCurveTo(W*.60,H*.558,W*.615,H*.550,W*.622,H*.545);
+  ctx.bezierCurveTo(W*.60,H*.535,W*.58,H*.527,W*.565,H*.52);
+  ctx.closePath();ctx.fill();
+  // Snow shadow
+  ctx.fillStyle='rgba(190,220,240,.5)';
+  ctx.beginPath();
+  ctx.moveTo(W*.565,H*.52);
+  ctx.bezierCurveTo(W*.575,H*.53,W*.595,H*.54,W*.62,H*.545);
+  ctx.bezierCurveTo(W*.60,H*.558,W*.585,H*.565,W*.565,H*.572);
+  ctx.bezierCurveTo(W*.555,H*.568,W*.565,H*.545,W*.565,H*.52);
+  ctx.fill();
+
+  // Summit cross / marker
+  ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=2.5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(W*.565,H*.49);ctx.lineTo(W*.565,H*.515);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(W*.554,H*.498);ctx.lineTo(W*.576,H*.498);ctx.stroke();
+}
+
+function drawForeground(){
+  // Foreground hill — dark green
+  const fgGrad=ctx.createLinearGradient(0,H*.73,0,H);
+  fgGrad.addColorStop(0,'#1a3d2b');
+  fgGrad.addColorStop(.3,'#245c3e');
+  fgGrad.addColorStop(.7,'#2d7a50');
+  fgGrad.addColorStop(1,'#3a9662');
+  ctx.fillStyle=fgGrad;
+  ctx.beginPath();
+  ctx.moveTo(-20,H);
+  ctx.bezierCurveTo(W*.03,H*.77,W*.07,H*.78,W*.12,H*.76);
+  ctx.bezierCurveTo(W*.17,H*.74,W*.22,H*.76,W*.28,H*.74);
+  ctx.bezierCurveTo(W*.33,H*.72,W*.38,H*.73,W*.44,H*.72);
+  ctx.bezierCurveTo(W*.50,H*.71,W*.55,H*.72,W*.62,H*.73);
+  ctx.bezierCurveTo(W*.70,H*.74,W*.78,H*.76,W*.86,H*.76);
+  ctx.bezierCurveTo(W*.92,H*.76,W*.97,H*.77,W+20,H*.77);
+  ctx.lineTo(W+20,H);ctx.closePath();ctx.fill();
+
+  // Rocks
+  [[W*.12,H*.755],[W*.35,H*.725],[W*.58,H*.725],[W*.75,H*.755]].forEach(([rx,ry],i)=>{
+    const rs=8+i*3;
+    ctx.fillStyle=`rgba(60,80,60,${.4+i*.05})`;
+    ctx.beginPath();
+    ctx.ellipse(rx,ry,rs,rs*.55,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(100,130,100,.25)';
+    ctx.beginPath();
+    ctx.ellipse(rx-rs*.3,ry-rs*.15,rs*.4,rs*.2,0,0,Math.PI*2);ctx.fill();
+  });
+
+  // Small bushes / shrubs
+  function bush(bx,by,bs){
+    ctx.fillStyle='rgba(34,85,55,.7)';
+    for(let i=-1;i<=1;i++){
+      ctx.beginPath();ctx.arc(bx+i*bs*.5,by-bs*.3*(1-Math.abs(i)*.3),bs*.5,0,Math.PI*2);ctx.fill();
+    }
+  }
+  [[W*.08,H*.76,6],[W*.19,H*.74,7],[W*.28,H*.73,5],[W*.42,H*.72,6],[W*.60,H*.73,7],[W*.78,H*.75,5],[W*.88,H*.76,6]].forEach(([x,y,s])=>bush(x,y,s));
+}
+
+function drawTrail(){
+  // Dotted trail path up the mountain
+  ctx.save();
+  ctx.setLineDash([4,8]);
+  ctx.strokeStyle='rgba(200,180,120,.45)';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(W*.05,H*.78);
+  ctx.bezierCurveTo(W*.15,H*.74,W*.25,H*.70,W*.35,H*.66);
+  ctx.bezierCurveTo(W*.42,H*.63,W*.48,H*.60,W*.52,H*.57);
+  ctx.bezierCurveTo(W*.545,H*.545,W*.56,H*.535,W*.565,H*.52);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawClouds(t){
+  clouds.forEach((c,i)=>{
+    c.x += c.speed;
+    if(c.x > W+150) c.x=-150;
+    const alpha = 0.55+i*.05;
+    // Cloud shadow
+    ctx.fillStyle=`rgba(140,170,200,${alpha*.3})`;
+    ctx.beginPath();
+    ctx.ellipse(c.x+6,c.y+10,c.w*.55,c.w*.18,0,0,Math.PI*2);ctx.fill();
+    // Cloud body
+    ctx.fillStyle=`rgba(255,255,255,${alpha})`;
+    const cx=c.x, cy=c.y, cw=c.w;
+    ctx.beginPath();
+    ctx.arc(cx,cy,cw*.38,0,Math.PI*2);
+    ctx.arc(cx+cw*.28,cy-cw*.08,cw*.30,0,Math.PI*2);
+    ctx.arc(cx+cw*.58,cy,cw*.32,0,Math.PI*2);
+    ctx.arc(cx+cw*.82,cy+cw*.04,cw*.22,0,Math.PI*2);
+    ctx.arc(cx-cw*.18,cy+cw*.04,cw*.22,0,Math.PI*2);
+    ctx.fill();
+    // Cloud highlight
+    ctx.fillStyle=`rgba(255,255,255,${alpha*.4})`;
+    ctx.beginPath();
+    ctx.ellipse(cx+cw*.15,cy-cw*.1,cw*.18,cw*.1,-.3,0,Math.PI*2);ctx.fill();
+  });
+}
+
+function drawHiker(x, y, step, jacketColor, hatColor, scale=1, longHair=false){
+  const s=scale;
+  const bob=Math.sin(step)*1.5;
+  ctx.save();
+  ctx.translate(x, y+bob);
+  ctx.scale(s,s);
+
+  const legSwing=Math.sin(step)*.45;
+  const armSwing=Math.sin(step+Math.PI)*.4;
+
+  // Shadow on ground
+  ctx.fillStyle='rgba(0,0,0,.15)';
+  ctx.beginPath();ctx.ellipse(0,20,8,3,0,0,Math.PI*2);ctx.fill();
+
+  // Backpack
+  ctx.fillStyle='#8b3a2a';
+  ctx.beginPath();
+  ctx.roundRect(-4,-10,9,12,2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.2)';
+  ctx.beginPath();ctx.roundRect(-3,-9,7,4,1);ctx.fill();
+
+  // Legs
+  ctx.strokeStyle=jacketColor;ctx.lineWidth=3.5;ctx.lineCap='round';
+  // Left leg
+  ctx.beginPath();
+  ctx.moveTo(-1,8);
+  ctx.lineTo(-3+legSwing*6,15);
+  ctx.lineTo(-3+legSwing*5,20);
+  ctx.stroke();
+  // Right leg
+  ctx.beginPath();
+  ctx.moveTo(1,8);
+  ctx.lineTo(3-legSwing*6,15);
+  ctx.lineTo(3-legSwing*5,20);
+  ctx.stroke();
+  // Boots
+  ctx.strokeStyle='#2a1a0a';ctx.lineWidth=3.5;
+  ctx.beginPath();ctx.moveTo(-3+legSwing*5,20);ctx.lineTo(-7+legSwing*4,20);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(3-legSwing*5,20);ctx.lineTo(7-legSwing*4,20);ctx.stroke();
+
+  // Body / jacket
+  ctx.fillStyle=jacketColor;
+  ctx.beginPath();ctx.roundRect(-5,-8,10,16,3);ctx.fill();
+  // Jacket detail
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,8);ctx.stroke();
+
+  // Arms
+  ctx.strokeStyle=jacketColor;ctx.lineWidth=3;ctx.lineCap='round';
+  // Left arm (with pole)
+  ctx.beginPath();
+  ctx.moveTo(-5,-4);
+  ctx.lineTo(-10+armSwing*4,-1);
+  ctx.lineTo(-11+armSwing*3,6);
+  ctx.stroke();
+  // Right arm
+  ctx.beginPath();
+  ctx.moveTo(5,-4);
+  ctx.lineTo(9-armSwing*4,-1);
+  ctx.lineTo(8-armSwing*3,5);
+  ctx.stroke();
+
+  // Trekking pole
+  ctx.strokeStyle='#c9a84c';ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(-11+armSwing*3,6);
+  ctx.lineTo(-14+armSwing*2,21);
+  ctx.stroke();
+  // Pole tip
+  ctx.fillStyle='#c9a84c';
+  ctx.beginPath();ctx.arc(-14+armSwing*2,21,1.5,0,Math.PI*2);ctx.fill();
+
+  // Neck
+  ctx.fillStyle='#d4a574';
+  ctx.beginPath();ctx.roundRect(-2.5,-11,5,5,1);ctx.fill();
+
+  // Head
+  ctx.fillStyle='#d4a574';
+  ctx.beginPath();ctx.arc(0,-16,7,0,Math.PI*2);ctx.fill();
+
+  // Long hair (female hiker)
+  if(longHair){
+    ctx.fillStyle='#3a1a05';
+    // Left side
+    ctx.beginPath();
+    ctx.moveTo(-6,-20);
+    ctx.bezierCurveTo(-10,-18,-12,-10,-10,2);
+    ctx.bezierCurveTo(-9,4,-7,4,-6,2);
+    ctx.bezierCurveTo(-7,-6,-6,-14,-4,-18);
+    ctx.closePath();ctx.fill();
+    // Right side
+    ctx.beginPath();
+    ctx.moveTo(6,-20);
+    ctx.bezierCurveTo(10,-18,12,-10,10,2);
+    ctx.bezierCurveTo(9,4,7,4,6,2);
+    ctx.bezierCurveTo(7,-6,6,-14,4,-18);
+    ctx.closePath();ctx.fill();
+    // Top of hair
+    ctx.beginPath();
+    ctx.arc(0,-19,5.5,Math.PI,0);
+    ctx.fill();
+  }
+  // Face
+  ctx.fillStyle='#c8915a';
+  ctx.beginPath();ctx.arc(0,-15,6.5,0,Math.PI*.7);ctx.fill();
+  // Eyes
+  ctx.fillStyle='#1a1a1a';
+  ctx.beginPath();ctx.arc(-2.5,-17,1.2,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(2.5,-17,1.2,0,Math.PI*2);ctx.fill();
+  // Eye whites
+  ctx.fillStyle='rgba(255,255,255,.6)';
+  ctx.beginPath();ctx.arc(-2.8,-17.3,.6,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(2.2,-17.3,.6,0,Math.PI*2);ctx.fill();
+  // Smile
+  ctx.strokeStyle='#8b4513';ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(0,-14.5,2.5,Math.PI*.1,Math.PI*.9);ctx.stroke();
+
+  // Hat
+  ctx.fillStyle=hatColor;
+  ctx.beginPath();ctx.ellipse(0,-21.5,8.5,3.5,0,0,Math.PI*2);ctx.fill();
+  ctx.fillRect(-5.5,-27,11,7);
+  ctx.fillStyle='rgba(0,0,0,.2)';
+  ctx.beginPath();ctx.ellipse(0,-21.5,8.5,3.5,0,0,Math.PI*2);ctx.fill();
+  // Hat band
+  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(-5.5,-23);ctx.lineTo(5.5,-23);ctx.stroke();
+
+  ctx.restore();
+}
+
+let hikerProgress=0;
+function getHikerPos(prog){
+  // p va 0→1→0 (sube y baja) usando un triángulo suave
+  const cycle=prog%2;
+  const p=cycle<1?cycle:2-cycle;
+  const x=W*.04+p*(W*.565-W*.04);
+  const y=getTerrainY(x);
+  return {x,y};
+}
+
+function drawHikers(t){
+  hikerProgress+=0.00055;
+  // nunca se resetea — ciclo infinito sube/baja
+  const p1=getHikerPos(hikerProgress);
+  const p2=getHikerPos(hikerProgress+0.055);
+  // Draw back hiker first (slightly smaller)
+  drawHiker(p2.x, p2.y, t*4.5+1, '#1a2744', '#e74c3c', 0.9, true);
+  drawHiker(p1.x, p1.y, t*4.5, '#2d5a8e', '#c9a84c', 1.0, false);
+}
+
+function drawBirds(t){
+  for(let i=0;i<4;i++){
+    const speed=18+i*6;
+    const bx=((t*speed + i*W*.25) % (W+100)) - 50;
+    const by=H*.09+Math.sin(t*.5+i*1.4)*H*.03+i*H*.018;
+    const wing=Math.sin(t*6+i*1.7); // -1 a 1
+    const sc=0.7+i*.12;
+
+    ctx.strokeStyle=`rgba(20,35,70,${.45+i*.05})`;
+    ctx.lineWidth=1.5*sc;
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+
+    // Ala izquierda — curva hacia arriba/abajo
+    ctx.beginPath();
+    ctx.moveTo(bx, by);
+    ctx.quadraticCurveTo(bx - 7*sc, by + wing*5*sc, bx - 14*sc, by + wing*2*sc);
+    ctx.stroke();
+
+    // Ala derecha
+    ctx.beginPath();
+    ctx.moveTo(bx, by);
+    ctx.quadraticCurveTo(bx + 7*sc, by + wing*5*sc, bx + 14*sc, by + wing*2*sc);
+    ctx.stroke();
+
+    // Cuerpo pequeño
+    ctx.fillStyle=`rgba(20,35,70,${.5+i*.05})`;
+    ctx.beginPath();
+    ctx.ellipse(bx, by, 2.5*sc, 1.5*sc, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+function drawAtmosphere(){
+  // Atmospheric haze at horizon
+  const hazeGrad=ctx.createLinearGradient(0,H*.5,0,H*.72);
+  hazeGrad.addColorStop(0,'rgba(180,210,235,0)');
+  hazeGrad.addColorStop(.5,'rgba(180,210,235,.08)');
+  hazeGrad.addColorStop(1,'rgba(180,210,235,0)');
+  ctx.fillStyle=hazeGrad;
+  ctx.fillRect(0,H*.5,W,H*.22);
+}
+
+function animate(t){
+  const ts=t/1000;
+  ctx.clearRect(0,0,W,H);
+  drawSky(ts);
+  drawSun(ts);
+  drawFarMountains();
+  drawMainMountain();
+  drawTrail();
+  drawForeground();
+  drawAtmosphere();
+  drawClouds(ts);
+  drawBirds(ts);
+  drawHikers(ts);
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+
+// ===== FORM SUBMISSION =====
+async function inscribirse(){
+  const input = document.getElementById('nombre');
+  const name = input.value.trim();
+  if(!name){ input.focus(); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled=true;
+  btn.textContent='Anotando…';
+
+  const body = new FormData();
+  body.append(FIELD_NOMBRE, name);
+  try{ await fetch(FORM_URL,{method:'POST',mode:'no-cors',body}); }catch{}
+
+  input.value='';
+  btn.textContent='Me apunto';
+  btn.disabled=false;
+
+  const msg = document.getElementById('success-msg');
+  msg.style.display='block';
+  setTimeout(()=>msg.style.display='none', 3500);
+
+  setTimeout(()=>renderInscritos(name), 2000);
+}
+
+document.getElementById('nombre').addEventListener('keydown', e=>{
+  if(e.key==='Enter') inscribirse();
+});
+
+// ===== INSCRITOS =====
+async function cargarInscritos(){
+  if(SHEET_CSV_URL==='TU_GOOGLE_SHEET_CSV_URL_AQUÍ'){
+    return ['Seba','María J.','Carlos R.','Valentina P.','Diego M.','Camila F.'];
+  }
+  try{
+    const r = await fetch(SHEET_CSV_URL+'&t='+Date.now());
+    const text = await r.text();
+    return text.trim().split('\n').slice(1)
+      .map(r=>(r.split(',')[1]||'').replace(/"/g,'').trim())
+      .filter(Boolean);
+  }catch{ return []; }
+}
+
+async function renderInscritos(highlight){
+  const list = document.getElementById('inscritos-list');
+  const inscritos = await cargarInscritos();
+  if(!inscritos.length){
+    list.innerHTML='<li style="color:rgba(255,255,255,.3);font-style:italic;font-size:.9rem;padding:.4rem 0;">Nadie aún — sé el primero/a ⛰️</li>';
+    return;
+  }
+  list.innerHTML = inscritos.map((n,i)=>`
+    <li style="display:flex;align-items:center;gap:10px;padding:.4rem .6rem;
+      border-left:2px solid ${n===highlight?'#2ecc71':'rgba(255,255,255,.15)'};
+      ${n===highlight?'animation:fadeSlide .4s ease;':''}
+      color:#fff;font-size:.95rem;">
+      <span style="color:rgba(255,255,255,.3);font-family:Oswald,sans-serif;font-size:.75rem;min-width:22px;">${String(i+1).padStart(2,'0')}</span>
+      ${n}
+    </li>`).join('');
+}
+
+renderInscritos();
+setInterval(()=>renderInscritos(), 30000);
+</script>
+<div style="position:relative;z-index:1;text-align:center;padding:2rem;font-family:'Oswald',sans-serif;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75);">
+  Hecho con ❤️ por <strong style="color:#fff;">Carla M.</strong>
+</div>
+</body>
+</html>
